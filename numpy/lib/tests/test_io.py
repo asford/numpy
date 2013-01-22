@@ -2,7 +2,7 @@ import sys
 import gzip
 import os
 import threading
-from tempfile import mkstemp, NamedTemporaryFile
+from tempfile import mkstemp, mktemp, NamedTemporaryFile
 import time
 from datetime import datetime
 import warnings
@@ -124,6 +124,18 @@ class TestSavezLoad(RoundtripTest, TestCase):
         RoundtripTest.roundtrip(self, np.savez, *args, **kwargs)
         for n, arr in enumerate(self.arr):
             assert_equal(arr, self.arr_reloaded['arr_%d' % n])
+
+    @np.testing.dec.slow
+    def test_big_arrays(self):
+        L = 2**31+1
+        tmp = mktemp(suffix='.npz')
+        a = np.empty(L, dtype=np.uint8)
+        np.savez(tmp, a=a)
+        del a
+        npfile = np.load(tmp)
+        a = npfile['a']
+        npfile.close()
+        os.remove(tmp)
 
     def test_multiple_arrays(self):
         a = np.array([[1, 2], [3, 4]], float)
