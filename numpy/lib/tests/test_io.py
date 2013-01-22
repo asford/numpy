@@ -30,6 +30,9 @@ else:
 
 MAJVER, MINVER = sys.version_info[:2]
 
+def is_64bit_platform():
+    return sys.maxsize> 2**32
+
 def strptime(s, fmt=None):
     """This function is available in the datetime module only
     from Python >= 2.5.
@@ -125,6 +128,8 @@ class TestSavezLoad(RoundtripTest, TestCase):
         for n, arr in enumerate(self.arr):
             assert_equal(arr, self.arr_reloaded['arr_%d' % n])
 
+
+    @np.testing.dec.skipif(not is_64bit_platform(), "Works only with 64bit systems")
     @np.testing.dec.slow
     def test_big_arrays(self):
         L = 2**31+1
