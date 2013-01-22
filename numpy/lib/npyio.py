@@ -26,7 +26,7 @@ from numpy.compat import asbytes, asstr, asbytes_nested, bytes
 if sys.version_info[0] >= 3:
     from io import BytesIO
 else:
-    from cStringIO import StringIO as BytesIO
+    from StringIO import StringIO as BytesIO
 
 _string_like = _is_string_like
 
